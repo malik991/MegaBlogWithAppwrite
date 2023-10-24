@@ -12,6 +12,9 @@ function App() {
       alert("can't wxceed more than 20");
     } else {
       setValue(counterValue + 1);
+      // setValue((preveCounter) => preveCounter + 1);
+      // setValue((preveCounter) => preveCounter + 1);
+      // setValue((preveCounter) => preveCounter + 1);
     }
   }
   function removeValue() {

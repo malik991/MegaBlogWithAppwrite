@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, InPut, ReactTextEditor, SelectComponent } from "../index";
 import dbServiceObj from "../../appwrite/configAppwrite";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addPost, editPost } from "../../store/postThunkSlice";
 
 function PostForms({ postDataValue }) {
   //console.log("enter in postForm.jsx", postDataValue);
@@ -21,47 +22,61 @@ function PostForms({ postDataValue }) {
         status: postDataValue?.status || "active",
       },
     });
-  const naviage = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userData = useSelector((state) => state.authName.userData);
+  const status = useSelector((state) => state.postThunk.status);
+  const error = useSelector((state) => state.postThunk.error);
+  const [loading, setLoading] = useState(false);
 
   const submit = async (data) => {
     // here we receive data from hookForm thats why we use that data and extract it
     if (postDataValue) {
-      const file = data.image[0]
-        ? await dbServiceObj.uploadFile(data.image[0])
-        : null;
-      if (file) {
-        await dbServiceObj.deleteFile(postDataValue.featuredImage);
-      }
-      const updateDbPost = await dbServiceObj.updatePost(
-        // postDataValue.$id is the unique value of that post
-
-        postDataValue.$id,
-        {
-          ...data, // remaming all data will be spread here like title , content etc
-          featuredImage: file ? file.$id : undefined, // but featured Image will be overwrite coz we update it above
-        }
-      );
-      if (updateDbPost) {
-        naviage(`/post/${updateDbPost.$id}`); // updateDbPost will provide use the
+      dispatch(editPost({ data, postDataValue, userId: userData.$id }));
+      if (status === "succeeded" && error === null) {
+        setLoading(true);
       }
     } else {
-      // first of all upload the file
-      const file = data.image[0]
-        ? await dbServiceObj.uploadFile(data.image[0])
-        : null;
+      // addpost is a asyncthunk function which take  only one obj as a parameter
+      //console.log("1");
+      dispatch(addPost({ data: data, userId: userData.$id }));
+    }
+    //console.log("2");
+    //console.log("Status: ", status);
 
-      //console.log("userData: ", userData.name);
-      const createPost = await dbServiceObj.createPost({
-        ...data,
-        featuredImage: file ? file.$id : undefined,
-        userId: userData.$id,
-      });
-      if (createPost) {
-        naviage(`/post/${createPost.$id}`);
-      }
+    // Wait for the promise to resolve before navigating
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    // Reset loading to false after the promise is resolved
+    //setLoading(false);
+    //console.log("Status after wait 2500: ", status);
+    if (status === "succeeded" && error === null) {
+      setLoading(true);
     }
   };
+
+  // const submit = useCallback(
+  //   async (data) => {
+  //     if (postDataValue) {
+  //       dispatch(editPost({ data, postDataValue, userId: userData.$id }));
+  //     } else {
+  //       dispatch(addPost({ data, userId: userData.$id }));
+  //     }
+
+  //     //setLoading(true);
+
+  //     try {
+  //       // Wait for the promise to resolve
+  //       await new Promise((resolve) => setTimeout(resolve, 2500));
+
+  //       //setLoading(false);
+  //       console.log("Status in submit function:", status);
+  //     } catch (error) {
+  //       //setLoading(false);
+  //       console.error("An unexpected error occurred:", error);
+  //     }
+  //   },
+  //   [postDataValue, dispatch, status, error, navigate, userData.$id]
+  // );
 
   // slug transform method
   // here we watch the title and and generate the slug
@@ -82,6 +97,17 @@ function PostForms({ postDataValue }) {
     // when we store the result of a call back method , so for optimization we will unsubscribe it
     // like this
     // here name will come from form
+    console.log("rending again: ", status);
+    if (status === "loading") {
+      console.log("state is loading: ", status);
+    } else if (status === "succeeded" && error === null && loading) {
+      // Move the navigation logic here
+      console.log("Navigating to /all-posts");
+
+      navigate("/all-posts");
+    } else if (status === "failed") {
+      console.error("Submission failed:", error);
+    }
     const subscription = watch((value, { name }) => {
       if (name === "title") {
         // if name is title than set the value where ? in the slug field where
@@ -98,7 +124,7 @@ function PostForms({ postDataValue }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [watch, slugTransform, setValue]);
+  }, [watch, slugTransform, setValue, status]);
 
   return (
     <form onSubmit={handleSubmit(submit)}>
@@ -158,10 +184,25 @@ function PostForms({ postDataValue }) {
         <Button
           type="submit"
           bgColor={postDataValue ? "bg-green-400" : undefined}
-          className="w-full"
+          //className="w-full"
+          className={`w-full ${status === "loading" ? "opacity-50" : ""}`}
+          disabled={status === "loading"} // when laoding disabl button
         >
-          {postDataValue ? "Update" : "Submit"}
+          {status === "loading"
+            ? "Submitting..."
+            : postDataValue
+            ? "Update"
+            : "Submit"}
+          {/* {postDataValue ? "Update" : "Submit"} */}
         </Button>
+        {/* Display a loading indicator */}
+        {status === "loading" && <p>Loading...</p>}
+        {/* Display an error message if status is "failed" */}
+        {status === "failed" && (
+          <div className="text-red-500 mt-2">
+            {error || "Something went wrong."}
+          </div>
+        )}
       </div>
     </form>
   );

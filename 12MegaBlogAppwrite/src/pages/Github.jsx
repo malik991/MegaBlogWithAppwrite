@@ -6,9 +6,7 @@ function Github() {
     <div className="w-full py-8 mt-4 text-center">
       <Container>
         <div className="flex flex-wrap">
-          <div
-            style={{ padding: "0.5rem", maxWidth: "400px", minWidth: "400px" }}
-          >
+          <div className="p-2 w-full">
             <GitHubCompo />
           </div>
         </div>

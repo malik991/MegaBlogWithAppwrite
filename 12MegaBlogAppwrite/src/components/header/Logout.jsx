@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import authServieObj from "../../appwrite/auth";
 import { logout } from "../../store/authSlice";
-import { logOut as postLogOut } from "../../store/postSlice";
+import { logOut as postLogOut } from "../../store/postThunkSlice";
 
 function Logout() {
   const dispatch = useDispatch();

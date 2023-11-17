@@ -11,6 +11,7 @@ function Login() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
+  const [btnClicked, setBtnClicked] = useState(false);
 
   // login function
   const loginFun = async (data) => {
@@ -18,6 +19,8 @@ function Login() {
     //console.log("in login.jsx data value of each field: ", data);
     setError("");
     try {
+      // chec btn clicked and change its appearence
+      setBtnClicked(true);
       // login provide use the session, if succesfuly loged in
       const session = await authServieObj.login(data);
       if (session) {
@@ -29,8 +32,12 @@ function Login() {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      // Reset btnClicked to false after the asynchronous process is complete
+      setBtnClicked(false);
     }
   };
+
   return (
     <div className="flex items-center justify-center w-full">
       <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
@@ -91,8 +98,16 @@ function Login() {
                 // },
               })}
             />
-            <Button type="submit" className="w-full">
-              Sign in
+            <Button
+              type="submit"
+              className={`w-full ${
+                btnClicked
+                  ? "bg-gray-300 text-blue-700"
+                  : "bg-blue-500 text-black"
+              }`}
+              disabled={btnClicked}
+            >
+              {btnClicked ? "Wait..." : "Sign in"}
             </Button>
           </div>
         </form>

@@ -3,33 +3,47 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import dbServiceObj from "../appwrite/configAppwrite";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { deletePost } from "../store/postThunkSlice";
 
 export default function Post() {
   const [post, setPost] = useState(null);
   const { slug } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.authName.userData);
+  const allPosts = useSelector((state) => state.postThunk.posts);
+  const status = useSelector((state) => state.postThunk.status);
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
   useEffect(() => {
     if (slug) {
-      dbServiceObj.getPost(slug).then((post) => {
-        if (post) setPost(post);
-        else navigate("/");
-      });
+      const getPost = allPosts.find((post) => post.$id === slug);
+      if (getPost) {
+        setPost(getPost);
+      } else {
+        navigate("/");
+      }
+      // dbServiceObj.getPost(slug).then((post) => {
+      //   if (post) setPost(post);
+      //   else navigate("/");
+      // });
     } else navigate("/");
   }, [slug, navigate]);
 
-  const deletePost = () => {
-    dbServiceObj.deletePost(post.$id).then((status) => {
-      if (status) {
-        dbServiceObj.deleteFile(post.featuredImage);
-        navigate("/");
-      }
-    });
+  const handleDeletePost = () => {
+    //dbServiceObj.deletePost(post.$id).then((data) => {
+    //if (data) {
+    // dbServiceObj.deleteFile(post.featuredImage);
+    dispatch(deletePost({ post: post, userId: userData.$id }));
+    if (status === "succeeded") {
+      navigate("/all-posts");
+    }
+
+    //}
+    // });
   };
 
   return post ? (
@@ -49,8 +63,12 @@ export default function Post() {
                   Edit
                 </Button>
               </Link>
-              <Button bgColor="bg-red-500" onClick={deletePost}>
-                Delete
+              <Button
+                bgColor="bg-red-500"
+                onClick={handleDeletePost}
+                disabled={status === "loading"} // when laoding disabl button
+              >
+                {status === "loading" ? "Delteing..." : "Delete"}
               </Button>
             </div>
           )}

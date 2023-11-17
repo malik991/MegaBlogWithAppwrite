@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import dbServiceObj from "../appwrite/configAppwrite";
 import { Container, PostCard } from "../components";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../store/postSlice";
+import { fetchPosts } from "../store/postThunkSlice";
 
 function Home() {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.postName.posts);
-  const status = useSelector((state) => state.postName.status);
+  const posts = useSelector((state) => state.postThunk.posts);
+  const status = useSelector((state) => state.postThunk.status);
+  const userData = useSelector((state) => state.authName.userData);
   //const authStatus = useSelector((state) => state.authName.status);
   //const [posts, setPosts] = useState([]);
   useEffect(() => {
     //mount data every time when this componenet will load
+    console.log("data useEffect home.jsx");
     dispatch(fetchPosts());
     // dbServiceObj
     //   .getAllPosts()
@@ -25,7 +27,7 @@ function Home() {
     //   });
   }, [dispatch]);
 
-  if (status === "loading") {
+  if (status === "loading" && userData) {
     return (
       <div className="w-full py-8 mt-4 text-center">
         <Container>
@@ -39,7 +41,7 @@ function Home() {
         </Container>
       </div>
     );
-  } else if (posts.length === 0) {
+  } else if (!Array.isArray(posts) || posts.length === 0) {
     return (
       <div className="w-full py-8 mt-4 text-center">
         <Container>

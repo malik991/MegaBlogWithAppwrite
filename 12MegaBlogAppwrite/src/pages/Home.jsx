@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import dbServiceObj from "../appwrite/configAppwrite";
 import { Container, PostCard } from "../components";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../store/postThunkSlice";
+import { fetchPosts, logOut } from "../store/postThunkSlice";
+import { logout } from "../store/authSlice";
 
 function Home() {
   const dispatch = useDispatch();
@@ -14,17 +15,12 @@ function Home() {
   useEffect(() => {
     //mount data every time when this componenet will load
     console.log("data useEffect home.jsx");
-    dispatch(fetchPosts());
-    // dbServiceObj
-    //   .getAllPosts()
-    //   .then((data) => {
-    //     if (data) {
-    //       setPosts(data.documents);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log("Error in Home page:: ", err);
-    //   });
+    if (userData && userData.$id) {
+      dispatch(fetchPosts());
+    } else {
+      dispatch(logOut());
+      dispatch(logout());
+    }
   }, [dispatch]);
 
   if (status === "loading" && userData) {

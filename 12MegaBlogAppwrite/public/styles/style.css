@@ -1,0 +1,58 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    /* background-color: aqua; */
+    
+  }
+  .gcard {
+    border-radius: 25px;
+    position: relative;
+    padding: 25px 15px;
+    background-color: #81ecec;
+    margin: 50px 0;
+    height: 280px;
+    box-shadow: 0 2px 5px #ccc;
+    text-align: left;
+  }
+  
+  .gtop {
+    border-radius: 25px 25px 0 0;
+    height: 100px;
+    width: 100%;
+    background-color: #00cec9;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+  }
+  
+  .gname {
+    font-size: 2em;
+    color: #2d3436;
+    display: flex;
+    flex: 1;
+    margin: 5% 10px 0;
+  }
+  
+  .gcard img {
+    margin: 30px 20px 0 0;
+  }
+  
+  .gcircle-img {
+    border-radius: 50%;
+    border: 7px solid #fff;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .gbottom {
+    margin-top: 120px;
+  }
+  
+  .ginfo {
+    margin: 20px 0;
+    color: #1a7e76;
+  }
+  

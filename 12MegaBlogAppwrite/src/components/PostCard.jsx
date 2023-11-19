@@ -8,7 +8,7 @@ function PostCard({ $id, title, featuredImage }) {
   return (
     // clickable card so use link
     <Link to={`/post/${$id}`}>
-      <div className="w-full bg-gray-200 rounded-xl p-4">
+      <div className="w-full shadow-lg ring-inherit bg-[#FAF0D7] rounded-xl p-4">
         <div className="w-full justify-center mb-4 ">
           <img
             src={dbServiceObj.filePreview(featuredImage)}

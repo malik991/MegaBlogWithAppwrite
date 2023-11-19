@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import "./App.css";
+//import "./App.css";
+import "../public/styles/style.css";
 import authServieObj from "./appwrite/auth";
 import { login, logout } from "./store/authSlice";
 import { Header, Footer } from "./components";
@@ -16,10 +17,12 @@ function App() {
     authServieObj
       .checkUser()
       .then((userData) => {
-        if (userData) {
+        if (userData && userData.$id) {
+          //console.log("dispath from app.jsx login:");
           dispatch(login({ userData }));
         } else {
           // if you didn't get the data, update the state by user logout
+          console.log("logout from login app.jsx:");
           dispatch(logout());
         }
       })
@@ -30,10 +33,10 @@ function App() {
   }, []);
 
   return !loading ? (
-    <div className="min-h-screen flex flex-wrap content-between bg-gray-400 ">
+    <div className="min-h-scree flex flex-wrap content-between rounded-xl ">
       <div className="w-full block">
         <Header />
-        <main>
+        <main className="my-2">
           {" "}
           <Outlet />{" "}
         </main>

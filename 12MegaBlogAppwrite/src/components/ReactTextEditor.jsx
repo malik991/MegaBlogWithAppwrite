@@ -11,8 +11,12 @@ export default function ReactTextEditor({
   defaultValue = "",
 }) {
   return (
-    <div className="w-full">
-      {label && <label className="inline-block mb-1 pl-1">{label}</label>}
+    <div className="w-full text-left mb-4">
+      {label && (
+        <label className="inline-block mb-1 pl-1 font-serif text-xl">
+          {label}
+        </label>
+      )}
       <Controller
         name={name || "content"}
         control={control} // this is the controll which come from parent who will call it it gives the full controll to that parent element about its all props

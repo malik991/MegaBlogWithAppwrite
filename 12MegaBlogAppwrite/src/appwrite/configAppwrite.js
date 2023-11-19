@@ -48,7 +48,7 @@ export class DbServices {
       );
     } catch (error) {
       console.log("Update Post error:: ", error);
-      return false;
+      throw error;
     }
   }
 

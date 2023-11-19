@@ -33,9 +33,10 @@ function PostForms({ postDataValue }) {
     // here we receive data from hookForm thats why we use that data and extract it
     if (postDataValue) {
       dispatch(editPost({ data, postDataValue, userId: userData.$id }));
-      if (status === "succeeded" && error === null) {
-        setLoading(true);
-      }
+      console.log("edit post");
+      // if (status === "succeeded" && error === null) {
+      //   setLoading(true);
+      // }
     } else {
       // addpost is a asyncthunk function which take  only one obj as a parameter
       //console.log("1");
@@ -45,11 +46,13 @@ function PostForms({ postDataValue }) {
     //console.log("Status: ", status);
 
     // Wait for the promise to resolve before navigating
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    //await new Promise((resolve) => setTimeout(resolve, 2500));
+    //console.log("2 after await");
     // Reset loading to false after the promise is resolved
     //setLoading(false);
     //console.log("Status after wait 2500: ", status);
     if (status === "succeeded" && error === null) {
+      console.log("set loading is true and succeeded");
       setLoading(true);
     }
   };
@@ -97,11 +100,12 @@ function PostForms({ postDataValue }) {
     // when we store the result of a call back method , so for optimization we will unsubscribe it
     // like this
     // here name will come from form
-    console.log("rending again: ", status);
+    console.log("useEffect postForm status: ", status);
     if (status === "loading") {
-      console.log("state is loading: ", status);
+      console.log("useEffect postForm status: ", status);
     } else if (status === "succeeded" && error === null && loading) {
       // Move the navigation logic here
+      console.log("useEffect postForm status: ", status);
       console.log("Navigating to /all-posts");
 
       navigate("/all-posts");

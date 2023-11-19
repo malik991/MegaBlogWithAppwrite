@@ -12,11 +12,13 @@ function Signup() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState();
+  const [btnClicked, setBtnClicked] = useState(false);
 
   async function signUp(data) {
     //console.log("sign up.jsx data value is: ", data);
     setError("");
     try {
+      setBtnClicked(true);
       const session = await authServieObj.createAccount(data);
       if (session) {
         const userData = await authServieObj.checkUser();
@@ -27,6 +29,9 @@ function Signup() {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      // Reset btnClicked to false after the asynchronous process is complete
+      setBtnClicked(false);
     }
   }
   // const onCheck = (data) => {
@@ -40,7 +45,7 @@ function Signup() {
       >
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
-            <Logo width="100%" />
+            <Logo width="70px" />
           </span>
         </div>
         <h2 className="text-center text-2xl font-bold leading-tight">
@@ -96,8 +101,16 @@ function Signup() {
               })}
             />
 
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button
+              type="submit"
+              className={`w-full ${
+                btnClicked
+                  ? "bg-gray-300 text-blue-700"
+                  : "bg-blue-500 text-black"
+              }`}
+              disabled={btnClicked}
+            >
+              {btnClicked ? "Wait..." : "Create Account"}
             </Button>
           </div>
         </form>

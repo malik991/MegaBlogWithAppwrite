@@ -45,7 +45,7 @@ function Header() {
   ];
 
   return (
-    <header className="py-3 shadow bg-gray-500">
+    <header className="py-3 shadow-xl ring-inherit bg-[#F3F3F3] rounded-lg mx-2 mt-2">
       <Container>
         <nav className="flex">
           <div className="mr-4">
@@ -56,7 +56,11 @@ function Header() {
           <ul className="flex ml-auto">
             {userData && (
               <li className="inline-block px-6 py-2 ">
-                Welcom, Mr {userData.name}
+                Welcom, Mr
+                <h3 className="text-lg text-green-600 font-sans font-bold">
+                  {" "}
+                  {userData.name}
+                </h3>
               </li>
             )}
             {navItems.map((item) =>

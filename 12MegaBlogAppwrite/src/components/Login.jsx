@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
@@ -26,6 +26,7 @@ function Login() {
       if (session) {
         const userData = await authServieObj.checkUser();
         if (userData) {
+          //console.log("if part login");
           dispatch(authLogin(userData));
           navigate("/");
         }
@@ -43,7 +44,7 @@ function Login() {
       <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
-            <Logo width="100%" />
+            <Logo width="70px" />
           </span>
         </div>
 

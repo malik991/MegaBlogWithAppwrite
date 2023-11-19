@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import dbServiceObj from "../appwrite/configAppwrite";
 import { Container, PostCard } from "../components";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../store/postThunkSlice";
+import { fetchPosts, logOut } from "../store/postThunkSlice";
+import { logout } from "../store/authSlice";
 
 function AllPosts() {
   const dispatch = useDispatch();
@@ -18,6 +19,10 @@ function AllPosts() {
       //console.log("enter useEffect Allpost.jsx");
       dispatch(fetchPosts(userData.$id));
     }
+    // if (userData && userData.$id === null) {
+    //   dispatch(logOut());
+    //   dispatch(logout());
+    // }
   }, [dispatch, userData, load]);
   //console.log("from all post page: ", userData.$id);
   if (status === "loading") {
@@ -50,7 +55,7 @@ function AllPosts() {
       </div>
     );
   }
-  if (load) {
+  if (load && userData.$id) {
     return (
       <div className="w-full py-8">
         <Container>

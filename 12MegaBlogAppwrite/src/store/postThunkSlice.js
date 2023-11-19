@@ -124,13 +124,10 @@ const postThukn = createSlice({
         state.status = "loading";
       })
       .addCase(addPost.fulfilled, (state, action) => {
-        console.log("enter in fullfilled");
         state.status = "succeeded";
 
         state.posts = [...state.posts, action.payload];
         const userId = action.meta.arg.userId;
-        // console.log("userId in addpost: ", userId);
-        //console.log("state.userPost[] :", state.userPosts);
 
         // this will ensure if posts exist than add the new post at end is
         // user not exist and its his first post than create the new array of userPost and
@@ -147,9 +144,11 @@ const postThukn = createSlice({
         state.error = action.error.message;
       })
       .addCase(editPost.pending, (state) => {
+        console.log("reducer loading");
         state.status = "loading";
       })
       .addCase(editPost.fulfilled, (state, action) => {
+        console.log("reducer fullfiller");
         state.status = "succeeded";
         state.posts = state.posts.map((post) =>
           post.$id === action.payload.$id ? action.payload : post
@@ -164,6 +163,7 @@ const postThukn = createSlice({
         state.error = null;
       })
       .addCase(editPost.rejected, (state, action) => {
+        console.log("reducer rejected");
         state.status = "failed";
         state.error = action.error.message;
       })

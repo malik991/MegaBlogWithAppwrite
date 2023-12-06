@@ -28,7 +28,7 @@ const InPut = React.forwardRef(function Input(
         type={type}
         ref={ref}
         {...props}
-        id={id}
+        id={props.id || id}
       />
     </div>
   );

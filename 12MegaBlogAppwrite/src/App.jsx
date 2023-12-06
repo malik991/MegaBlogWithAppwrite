@@ -30,6 +30,7 @@ function App() {
         console.log("Error in App useEffect", error);
       })
       .finally(() => setLoading(false));
+    console.log("app.jsx: ", loading);
   }, []);
 
   return !loading ? (

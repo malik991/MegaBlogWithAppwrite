@@ -5,16 +5,19 @@ import { useDispatch } from "react-redux";
 import { InPut, Button, Logo } from "./index";
 import authServieObj from "../appwrite/auth";
 import { useForm } from "react-hook-form"; // this is the main hook by which we will use forms
+import { DevTool } from "@hookform/devtools";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, control, formState } = useForm(); // control use for devTool
   const [error, setError] = useState("");
   const [btnClicked, setBtnClicked] = useState(false);
-
+  const { errors } = formState; // hook field errors
   // login function
   const loginFun = async (data) => {
+    console.log("function called", data);
+    //setError(errors.email?.message);
     // whenever u submit any form should clean all the errors
     //console.log("in login.jsx data value of each field: ", data);
     setError("");
@@ -32,6 +35,7 @@ function Login() {
         }
       }
     } catch (error) {
+      console.log("error is: ", error);
       setError(error.message);
     } finally {
       // Reset btnClicked to false after the asynchronous process is complete
@@ -64,41 +68,55 @@ function Login() {
         {/* here handleSubmit is key word and a function and an event comes from hook-form and it get
          your function like login where form will be submitted , now do not need
          to manage state of your inputs hook-form manage it itself*/}
-        <form className="mt-8" onSubmit={handleSubmit(loginFun)}>
+
+        <form className="mt-8" onSubmit={handleSubmit(loginFun)} noValidate>
           <div className="space-y-5">
-            <InPut
-              lanel="Email: "
-              placeholder="Enter your Email !"
-              type="email"
-              // here we have to use JS code, coz we use useForm, every time when
+            {/* // here we have to use JS code, coz we use useForm, every time when
               // we use Input component mention ...register , otherwise values will be override
               // ...register("Email"), name Email should be unique, coz it is the data which pass
               // in login(data), so every time name will be unique likw eamil, passsword etc
-              // 2nd argument is an object of options alot of options availble in documnetion of useHook form
+              // 2nd argument is an object of options alot of options availble in documnetion of useHook form */}
+            <InPut
+              label="E-mail:"
+              placeholder="Enter your Email !"
+              type="email"
+              //id="email"
               {...register("email", {
-                required: true,
-                // validate: {
-                //   pattern: (value) =>
-                //     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                //     "Email address must be a valid address",
-                // },
+                pattern: {
+                  value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                  message: "Invalid Email formate",
+                },
+                required: {
+                  value: true,
+                  message: "email required",
+                },
               })}
             />
+            {errors.email?.message && (
+              <p className="text-red-600 text-left">{errors.email.message}</p>
+            )}
             <InPut
               label="Password"
               type="password"
-              placeholder="enter your password"
+              placeholder="Enter your password"
+              id="password"
               {...register("password", {
-                required: true,
-                // validate: {
-                //   pattern: (value) =>
-                //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{5,}$/.test(
-                //       value
-                //     ) ||
+                required: {
+                  value: true,
+                  message: "Password is mendatory",
+                },
+                // pattern: {
+                //   value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{5,}$/,
+                //   message:
                 //     "min 5 chracters, 1 uppercase and 1 digit i.e Masdfgq12",
                 // },
               })}
             />
+            {errors.password?.message && (
+              <p className="text-red-600 mt-0 text-left">
+                {errors.password.message}
+              </p>
+            )}
             <Button
               type="submit"
               className={`w-full ${
@@ -112,6 +130,7 @@ function Login() {
             </Button>
           </div>
         </form>
+        <DevTool control={control} />
       </div>
     </div>
   );
